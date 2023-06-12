@@ -7,13 +7,8 @@ import multer from 'multer';
 
 import { registerValidation, loginValidation, postCreateValidation } from './validation.js';
 
-
-import checkAuth from './utils/checkAuth.js';
-
-import * as UserController from './controllers/UserController.js'
-import * as postController from './controllers/PostController.js'
-import handleValidationErrors from './utils/handleValidationErrors.js';
-
+import {PostController, UserController} from './controllers/index.js'
+import {checkAuth, handleValidationErrors} from './utils/index.js'
 
 
 mongoose.connect('mongodb+srv://admin:admin123@coldcluster.7vq6x0r.mongodb.net/blog?retryWrites=true&w=majority').then(() => {
@@ -46,11 +41,11 @@ app.post('/upload',checkAuth, upload.single('image'), (req, res) => {
     })
 } )
 
-app.get('/posts', postController.getAll )
-app.get('/posts/:id', postController.getOne)
-app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, postController.create)
-app.delete('/posts/:id',checkAuth, postController.remove)
-app.patch('/posts/:id',checkAuth, postCreateValidation, handleValidationErrors, postController.update)
+app.get('/posts', PostController.getAll )
+app.get('/posts/:id', PostController.getOne)
+app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create)
+app.delete('/posts/:id',checkAuth, PostController.remove)
+app.patch('/posts/:id',checkAuth, postCreateValidation, handleValidationErrors, PostController.update)
 
 app.listen(4444, (err) => {
     if (err) {
