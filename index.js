@@ -1,9 +1,11 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcrypt' 
 import mongoose from 'mongoose';
 import { validationResult } from 'express-validator';
 import multer from 'multer';
+import cors from 'cors';
+
 
 import { registerValidation, loginValidation, postCreateValidation } from './validation.js';
 
@@ -29,6 +31,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage});
 
 app.use(express.json());
+app.use(cors())
 app.use('/uploads', express.static('uploads'));
 
 app.post('/auth/login',loginValidation, handleValidationErrors, UserController.login);
@@ -41,11 +44,15 @@ app.post('/upload',checkAuth, upload.single('image'), (req, res) => {
     })
 } )
 
+app.get('/tags', PostController.getTags)
 app.get('/posts', PostController.getAll )
+app.get('/posts/tags', PostController.getTags)
 app.get('/posts/:id', PostController.getOne)
 app.post('/posts', checkAuth, postCreateValidation, handleValidationErrors, PostController.create)
 app.delete('/posts/:id',checkAuth, PostController.remove)
 app.patch('/posts/:id',checkAuth, postCreateValidation, handleValidationErrors, PostController.update)
+
+
 
 app.listen(4444, (err) => {
     if (err) {
