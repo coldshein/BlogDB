@@ -19,7 +19,7 @@ export const getTags = async (req, res) => {
 };
 export const getAll = async (req, res) => {
   try {
-    const posts = await PostModel.find().populate("user").exec();
+    const posts = await PostModel.find().populate("user").sort({createdAt: -1}).exec();
 
     res.json(posts);
   } catch (error) {
@@ -101,7 +101,7 @@ export const create = async (req, res) => {
       title: req.body.title,
       text: req.body.text,
       imageUrl: req.body.imageUrl,
-      tags: req.body.tags,
+      tags: req.body.tags.split(','),
       user: req.userId,
     });
 
